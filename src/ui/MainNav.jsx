@@ -84,7 +84,7 @@ function MainNav() {
         <li>
           <StyledNavLink to="/settings">
             <HiOutlineCog6Tooth />
-            Cài đặt
+            Cài đặt hệ thống
           </StyledNavLink>
         </li>
       </NavList>
