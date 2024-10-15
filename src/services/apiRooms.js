@@ -5,7 +5,7 @@ export async function getRooms() {
 
   if (error) {
     console.log(error);
-    throw new Error("Cabins could not be loaded");
+    throw new Error("Không tải được phòng");
   }
 
   return data;

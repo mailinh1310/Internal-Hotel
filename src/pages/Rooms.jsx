@@ -1,18 +1,18 @@
-import { useEffect } from "react";
+import RoomTable from "../features/rooms/RoomTable";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
-import { getRooms } from "../services/apiRooms";
 
 function Rooms() {
-  useEffect(function () {
-    getRooms().then((data) => console.log(data));
-  }, []);
-
   return (
-    <Row type="horizontal">
-      <Heading as="h1">All rooms</Heading>
-      {/* <p>TEST</p> */}
-    </Row>
+    <>
+      <Row type="horizontal">
+        <Heading as="h1">Tất cả phòng</Heading>
+        <p>Lọc / Sắp xếp</p>
+      </Row>
+      <Row>
+        <RoomTable />
+      </Row>
+    </>
   );
 }
 

@@ -1,4 +1,7 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import styled from "styled-components";
+import { formatCurrency } from "../../utils/helpers";
 
 const TableRow = styled.div`
   display: grid;
@@ -21,7 +24,7 @@ const Img = styled.img`
   transform: scale(1.5) translateX(-7px);
 `;
 
-const Cabin = styled.div`
+const Room = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--color-grey-600);
@@ -38,3 +41,20 @@ const Discount = styled.div`
   font-weight: 500;
   color: var(--color-green-700);
 `;
+
+function RoomRow({ room }) {
+  const { name, maxCapacity, regularPrice, discount, image } = room;
+
+  return (
+    <TableRow role="row">
+      <Img src={image} />
+      <Room>{name}</Room>
+      <div>Chứa tối đa {maxCapacity} khách</div>
+      <Price>{formatCurrency(regularPrice)}</Price>
+      <Discount>{formatCurrency(discount)}</Discount>
+      <button>Xoá</button>
+    </TableRow>
+  );
+}
+
+export default RoomRow;
