@@ -2,6 +2,9 @@
 /* eslint-disable no-unused-vars */
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteRoom } from "../../services/apiRooms";
+import toast from "react-hot-toast";
 
 const TableRow = styled.div`
   display: grid;
@@ -43,7 +46,24 @@ const Discount = styled.div`
 `;
 
 function RoomRow({ room }) {
-  const { name, maxCapacity, regularPrice, discount, image } = room;
+  const { id: roomId, name, maxCapacity, regularPrice, discount, image } = room;
+
+  // Use useQueryClient() for invalidateQueries()
+  const queryClient = useQueryClient();
+
+  // Use useMutation() to delete
+  const { isLoading: isDeleting, mutate } = useMutation({
+    mutationFn: (id) => deleteRoom(id),
+    onSuccess: () => {
+      toast.success("Đã xoá phòng thành công");
+
+      // Use invalidateQueries to update data
+      queryClient.invalidateQueries({
+        queryKey: ["rooms"],
+      });
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   return (
     <TableRow role="row">
@@ -52,7 +72,9 @@ function RoomRow({ room }) {
       <div>Chứa tối đa {maxCapacity} khách</div>
       <Price>{formatCurrency(regularPrice)}</Price>
       <Discount>{formatCurrency(discount)}</Discount>
-      <button>Xoá</button>
+      <button onClick={() => mutate(roomId)} disabled={isDeleting}>
+        Xoá
+      </button>
     </TableRow>
   );
 }
