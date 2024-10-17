@@ -21,3 +21,14 @@ export async function deleteRoom(id) {
 
   return data;
 }
+
+export async function createRoom(newRoom) {
+  const { data, error } = await supabase.from("rooms").insert([newRoom]);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Phòng mới không được thêm thành công");
+  }
+
+  return data;
+}
