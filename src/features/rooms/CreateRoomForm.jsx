@@ -9,8 +9,9 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createRoom } from "../../services/apiRooms";
 import toast from "react-hot-toast";
+import FormRow from "../../ui/FormRow";
 
-const FormRow = styled.div`
+const FormRow2 = styled.div`
   display: grid;
   align-items: center;
   grid-template-columns: 24rem 1fr 1.2fr;
@@ -37,18 +38,12 @@ const FormRow = styled.div`
   }
 `;
 
-const Label = styled.label`
-  font-weight: 500;
-`;
-
-const Error = styled.span`
-  font-size: 1.4rem;
-  color: var(--color-red-700);
-`;
-
 function CreateRoomForm() {
   // use register, handleSubmit and reset from useForm()
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, getValues, formState } = useForm();
+
+  const { errors } = formState;
+  console.log(errors);
 
   // useQueryClient() for updating
   const queryClient = useQueryClient();
@@ -70,57 +65,94 @@ function CreateRoomForm() {
     mutate(data);
   }
 
-  // register all input fields
+  function onError(errors) {
+    console.log(errors);
+  }
+
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-      {/* handleSubmit give data as para for onSubmit() */}
-      <FormRow>
-        <Label htmlFor="name">Tên phòng</Label>
-        <Input type="text" id="name" {...register("name")} />
+    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+      <FormRow label="Tên phòng" error={errors?.name?.message}>
+        <Input
+          type="text"
+          id="name"
+          disabled={isCreating}
+          {...register("name", {
+            required: "Cần điền thông tin",
+          })}
+        />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="maxCapacity">Sức chứa tối đa</Label>
-        <Input type="number" id="maxCapacity" {...register("maxCapacity")} />
+      <FormRow label="Sức chứa tối đa" error={errors?.maxCapacity?.message}>
+        <Input
+          type="number"
+          id="maxCapacity"
+          disabled={isCreating}
+          {...register("maxCapacity", {
+            required: "Cần điền thông tin",
+            min: {
+              value: 1,
+              message: "Cần ít nhất là 1",
+            },
+          })}
+        />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="regularPrice">Giá bình thường</Label>
-        <Input type="number" id="regularPrice" {...register("regularPrice")} />
+      <FormRow label="Giá bình thường" error={errors?.regularPrice?.message}>
+        <Input
+          type="number"
+          id="regularPrice"
+          disabled={isCreating}
+          {...register("regularPrice", {
+            required: "Cần điền thông tin",
+          })}
+        />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="discount">Giảm giá</Label>
+      <FormRow label="Giảm giá" error={errors?.discount?.message}>
         <Input
           type="number"
           id="discount"
+          disabled={isCreating}
           defaultValue={0}
-          {...register("discount")}
+          {...register("discount", {
+            required: "Cần điền thông tin",
+            validate: (value) =>
+              value <= getValues().regularPrice ||
+              "Cần ít hơn hoặc bằng giá bình thường",
+          })}
         />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="description">Mô tả</Label>
+      <FormRow label="Mô tả phòng" error={errors?.description?.message}>
         <Textarea
           type="number"
           id="description"
+          disabled={isCreating}
           defaultValue=""
-          {...register("description")}
+          {...register("description", {
+            required: "Cần điền thông tin",
+          })}
         />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="image">Hình ảnh phòng</Label>
-        <FileInput id="image" accept="image/*" {...register("image")} />
+      <FormRow label="Hình ảnh phòng" error={errors?.image?.message}>
+        <FileInput
+          id="image"
+          accept="image/*"
+          disabled={isCreating}
+          {...register("image", {
+            required: "Cần điền thông tin",
+          })}
+        />
       </FormRow>
 
-      <FormRow>
+      <FormRow2>
         {/* type is an HTML attribute! */}
         <Button variation="secondary" type="reset">
           Huỷ
         </Button>
         <Button disabled={isCreating}>Thêm phòng</Button>
-      </FormRow>
+      </FormRow2>
     </Form>
   );
 }
