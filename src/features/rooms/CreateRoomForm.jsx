@@ -11,33 +11,6 @@ import { createRoom } from "../../services/apiRooms";
 import toast from "react-hot-toast";
 import FormRow from "../../ui/FormRow";
 
-const FormRow2 = styled.div`
-  display: grid;
-  align-items: center;
-  grid-template-columns: 24rem 1fr 1.2fr;
-  gap: 2.4rem;
-
-  padding: 1.2rem 0;
-
-  &:first-child {
-    padding-top: 0;
-  }
-
-  &:last-child {
-    padding-bottom: 0;
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-100);
-  }
-
-  &:has(button) {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1.2rem;
-  }
-`;
-
 function CreateRoomForm() {
   // use register, handleSubmit and reset from useForm()
   const { register, handleSubmit, reset, getValues, formState } = useForm();
@@ -61,8 +34,8 @@ function CreateRoomForm() {
   });
 
   function onSubmit(data) {
-    // console.log(data);
-    mutate(data);
+    console.log(data);
+    mutate({ ...data, image: data.image[0] });
   }
 
   function onError(errors) {
@@ -146,13 +119,13 @@ function CreateRoomForm() {
         />
       </FormRow>
 
-      <FormRow2>
+      <FormRow>
         {/* type is an HTML attribute! */}
         <Button variation="secondary" type="reset">
           Huỷ
         </Button>
         <Button disabled={isCreating}>Thêm phòng</Button>
-      </FormRow2>
+      </FormRow>
     </Form>
   );
 }
