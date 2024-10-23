@@ -8,6 +8,9 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import CreateRoomForm from "./CreateRoomForm";
 import useDeleteRoom from "./useDeleteRoom";
+import { HiPencil, HiTrash } from "react-icons/hi";
+import { HiSquare2Stack } from "react-icons/hi2";
+import useCreateRoom from "./useCreateRoom";
 
 const TableRow = styled.div`
   display: grid;
@@ -50,10 +53,29 @@ const Discount = styled.div`
 
 function RoomRow({ room }) {
   const [showForm, setShowForm] = useState(false);
-
-  const { id: roomId, name, maxCapacity, regularPrice, discount, image } = room;
-
   const { isDeleting, deleteRoom } = useDeleteRoom();
+  const { isCreating, createRoom } = useCreateRoom();
+
+  const {
+    id: roomId,
+    name,
+    maxCapacity,
+    regularPrice,
+    discount,
+    image,
+    description,
+  } = room;
+
+  function handleDuplicate() {
+    createRoom({
+      name: `Copy of ${name}`,
+      maxCapacity,
+      regularPrice,
+      discount,
+      image,
+      description,
+    });
+  }
 
   return (
     <>
@@ -69,9 +91,14 @@ function RoomRow({ room }) {
         )}
 
         <div>
-          <button onClick={() => setShowForm((s) => !s)}>Sửa</button>
+          <button onClick={handleDuplicate} disabled={isCreating}>
+            <HiSquare2Stack />
+          </button>
+          <button onClick={() => setShowForm((s) => !s)}>
+            <HiPencil />
+          </button>
           <button onClick={() => deleteRoom(roomId)} disabled={isDeleting}>
-            Xoá
+            <HiTrash />
           </button>
         </div>
       </TableRow>
