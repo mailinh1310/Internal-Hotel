@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
 import Button from "../../ui/Button";
@@ -6,19 +5,13 @@ import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createEditRoom } from "../../services/apiRooms";
+import { createRoom } from "../../services/apiRooms";
 import toast from "react-hot-toast";
 import FormRow from "../../ui/FormRow";
 
-function CreateRoomForm({ roomToEdit = {} }) {
-  const { id: editId, ...editValues } = roomToEdit;
-
-  const isEditSession = Boolean(editId);
-
+function CreateRoomForm() {
   // use register, handleSubmit and reset from useForm()
-  const { register, handleSubmit, reset, getValues, formState } = useForm({
-    defaultValues: isEditSession ? editValues : {},
-  });
+  const { register, handleSubmit, reset, getValues, formState } = useForm();
 
   const { errors } = formState;
   console.log(errors);
@@ -26,9 +19,9 @@ function CreateRoomForm({ roomToEdit = {} }) {
   // useQueryClient() for updating
   const queryClient = useQueryClient();
 
-  // use mutate và isLoading từ useMutation()
-  const { mutate: createRoom, isLoading: isCreating } = useMutation({
-    mutationFn: createEditRoom,
+  // use mutate and isLoading from useMutation()
+  const { mutate, isLoading: isCreating } = useMutation({
+    mutationFn: createRoom,
     onSuccess: () => {
       toast.success("Phòng mới đã được thêm thành công");
       // update data
@@ -38,25 +31,9 @@ function CreateRoomForm({ roomToEdit = {} }) {
     onError: (err) => toast.error(err.message),
   });
 
-  const { mutate: editRoom, isLoading: isEditing } = useMutation({
-    mutationFn: ({ newRoomData, id }) => createEditRoom(newRoomData, id),
-    onSuccess: () => {
-      toast.success("Thông tin phòng đã được sửa thành công");
-      // update data
-      queryClient.invalidateQueries({ queryKey: ["rooms"] });
-      reset();
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  const isWorking = isCreating || isEditing;
-
   function onSubmit(data) {
-    const image = typeof data.image === "string" ? data.image : data.image[0];
-
-    if (isEditSession)
-      editRoom({ newRoomData: { ...data, image }, id: editId });
-    else createRoom({ ...data, image: data.image[0] });
+    console.log(data);
+    mutate({ ...data, image: data.image[0] });
   }
 
   function onError(errors) {
@@ -69,7 +46,7 @@ function CreateRoomForm({ roomToEdit = {} }) {
         <Input
           type="text"
           id="name"
-          disabled={isWorking}
+          disabled={isCreating}
           {...register("name", {
             required: "Cần điền thông tin",
           })}
@@ -80,7 +57,7 @@ function CreateRoomForm({ roomToEdit = {} }) {
         <Input
           type="number"
           id="maxCapacity"
-          disabled={isWorking}
+          disabled={isCreating}
           {...register("maxCapacity", {
             required: "Cần điền thông tin",
             min: {
@@ -95,7 +72,7 @@ function CreateRoomForm({ roomToEdit = {} }) {
         <Input
           type="number"
           id="regularPrice"
-          disabled={isWorking}
+          disabled={isCreating}
           {...register("regularPrice", {
             required: "Cần điền thông tin",
           })}
@@ -106,7 +83,7 @@ function CreateRoomForm({ roomToEdit = {} }) {
         <Input
           type="number"
           id="discount"
-          disabled={isWorking}
+          disabled={isCreating}
           defaultValue={0}
           {...register("discount", {
             required: "Cần điền thông tin",
@@ -121,7 +98,7 @@ function CreateRoomForm({ roomToEdit = {} }) {
         <Textarea
           type="number"
           id="description"
-          disabled={isWorking}
+          disabled={isCreating}
           defaultValue=""
           {...register("description", {
             required: "Cần điền thông tin",
@@ -133,9 +110,9 @@ function CreateRoomForm({ roomToEdit = {} }) {
         <FileInput
           id="image"
           accept="image/*"
-          disabled={isWorking}
+          disabled={isCreating}
           {...register("image", {
-            required: isEditSession ? false : "Cần điền thông tin",
+            required: "Cần điền thông tin",
           })}
         />
       </FormRow>
@@ -145,9 +122,7 @@ function CreateRoomForm({ roomToEdit = {} }) {
         <Button variation="secondary" type="reset">
           Huỷ
         </Button>
-        <Button disabled={isWorking}>
-          {isEditSession ? "Sửa thông tin" : "Thêm phòng"}
-        </Button>
+        <Button disabled={isCreating}>Thêm phòng</Button>
       </FormRow>
     </Form>
   );

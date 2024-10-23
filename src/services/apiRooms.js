@@ -22,22 +22,29 @@ export async function deleteRoom(id) {
   return data;
 }
 
-export async function createRoom(newRoom) {
+export async function createEditRoom(newRoom, id) {
+  const hasImagePath = newRoom.image?.startsWith?.(supabaseUrl);
+
   const imageName = `${Math.random()}-${newRoom.image.name}`.replaceAll(
     "/",
     ""
   );
 
-  // https://xbjtrlkyucjibnsbphqt.supabase.co/storage/v1/object/public/room-images/cabin-001.jpg
+  const imagePath = hasImagePath
+    ? newRoom.image
+    : `${supabaseUrl}/storage/v1/object/public/room-images/${imageName}`;
 
-  const imagePath = `${supabaseUrl}/storage/v1/object/public/room-images/${imageName}`;
+  // 1. Create and edit room
+  // Tách query để reuse
+  let query = supabase.from("Rooms");
 
-  // 1. Create room
-  const { data, error } = await supabase
-    .from("Rooms")
-    .insert([{ ...newRoom, image: imagePath }])
-    .select();
-  console.log(data);
+  // Create
+  if (!id) query = query.insert([{ ...newRoom, image: imagePath }]);
+
+  // Edit
+  if (id) query = query.update({ ...newRoom, image: imagePath }).eq("id", id);
+
+  const { data, error } = await query.select().single();
 
   if (error) {
     console.error(error);
