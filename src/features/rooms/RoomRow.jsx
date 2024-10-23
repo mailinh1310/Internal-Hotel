@@ -7,6 +7,7 @@ import { deleteRoom } from "../../services/apiRooms";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import CreateRoomForm from "./CreateRoomForm";
+import useDeleteRoom from "./useDeleteRoom";
 
 const TableRow = styled.div`
   display: grid;
@@ -52,22 +53,7 @@ function RoomRow({ room }) {
 
   const { id: roomId, name, maxCapacity, regularPrice, discount, image } = room;
 
-  // Use useQueryClient() for invalidateQueries()
-  const queryClient = useQueryClient();
-
-  // Use useMutation() to delete
-  const { isLoading: isDeleting, mutate } = useMutation({
-    mutationFn: (id) => deleteRoom(id),
-    onSuccess: () => {
-      toast.success("Đã xoá phòng thành công");
-
-      // Use invalidateQueries to update data
-      queryClient.invalidateQueries({
-        queryKey: ["rooms"],
-      });
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  const { isDeleting, deleteRoom } = useDeleteRoom();
 
   return (
     <>
@@ -76,10 +62,15 @@ function RoomRow({ room }) {
         <Room>{name}</Room>
         <div>Chứa tối đa {maxCapacity} khách</div>
         <Price>{formatCurrency(regularPrice)}</Price>
-        <Discount>{formatCurrency(discount)}</Discount>
+        {discount ? (
+          <Discount>{formatCurrency(discount)}</Discount>
+        ) : (
+          <span>&mdash;</span>
+        )}
+
         <div>
           <button onClick={() => setShowForm((s) => !s)}>Sửa</button>
-          <button onClick={() => mutate(roomId)} disabled={isDeleting}>
+          <button onClick={() => deleteRoom(roomId)} disabled={isDeleting}>
             Xoá
           </button>
         </div>

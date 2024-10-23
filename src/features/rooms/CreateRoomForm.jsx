@@ -5,10 +5,9 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createEditRoom } from "../../services/apiRooms";
-import toast from "react-hot-toast";
 import FormRow from "../../ui/FormRow";
+import useCreateRoom from "./useCreateRoom";
+import useEditRoom from "./useEditRoom";
 
 function CreateRoomForm({ roomToEdit = {} }) {
   const { id: editId, ...editValues } = roomToEdit;
@@ -23,31 +22,8 @@ function CreateRoomForm({ roomToEdit = {} }) {
   const { errors } = formState;
   console.log(errors);
 
-  // useQueryClient() for updating
-  const queryClient = useQueryClient();
-
-  // use mutate và isLoading từ useMutation()
-  const { mutate: createRoom, isLoading: isCreating } = useMutation({
-    mutationFn: createEditRoom,
-    onSuccess: () => {
-      toast.success("Phòng mới đã được thêm thành công");
-      // update data
-      queryClient.invalidateQueries({ queryKey: ["rooms"] });
-      reset();
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  const { mutate: editRoom, isLoading: isEditing } = useMutation({
-    mutationFn: ({ newRoomData, id }) => createEditRoom(newRoomData, id),
-    onSuccess: () => {
-      toast.success("Thông tin phòng đã được sửa thành công");
-      // update data
-      queryClient.invalidateQueries({ queryKey: ["rooms"] });
-      reset();
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  const { isCreating, createRoom } = useCreateRoom();
+  const { isEditing, editRoom } = useEditRoom();
 
   const isWorking = isCreating || isEditing;
 
@@ -55,8 +31,22 @@ function CreateRoomForm({ roomToEdit = {} }) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
 
     if (isEditSession)
-      editRoom({ newRoomData: { ...data, image }, id: editId });
-    else createRoom({ ...data, image: data.image[0] });
+      editRoom(
+        { newRoomData: { ...data, image }, id: editId },
+        {
+          onSuccess: () => reset(),
+        }
+      );
+    else
+      createRoom(
+        { ...data, image: data.image[0] },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+            reset();
+          },
+        }
+      );
   }
 
   function onError(errors) {
