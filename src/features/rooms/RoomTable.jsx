@@ -1,6 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
-import { getRooms } from "../../services/apiRooms";
 import Spinner from "../../ui/Spinner";
 import RoomRow from "./RoomRow";
 import useRooms from "./useRooms";
