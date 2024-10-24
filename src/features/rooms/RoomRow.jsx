@@ -2,15 +2,13 @@
 /* eslint-disable no-unused-vars */
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteRoom } from "../../services/apiRooms";
-import toast from "react-hot-toast";
-import { useState } from "react";
 import CreateRoomForm from "./CreateRoomForm";
 import useDeleteRoom from "./useDeleteRoom";
 import { HiPencil, HiTrash } from "react-icons/hi";
 import { HiSquare2Stack } from "react-icons/hi2";
 import useCreateRoom from "./useCreateRoom";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
 
 const TableRow = styled.div`
   display: grid;
@@ -52,7 +50,6 @@ const Discount = styled.div`
 `;
 
 function RoomRow({ room }) {
-  const [showForm, setShowForm] = useState(false);
   const { isDeleting, deleteRoom } = useDeleteRoom();
   const { isCreating, createRoom } = useCreateRoom();
 
@@ -78,32 +75,47 @@ function RoomRow({ room }) {
   }
 
   return (
-    <>
-      <TableRow role="row">
-        <Img src={image} />
-        <Room>{name}</Room>
-        <div>Chứa tối đa {maxCapacity} khách</div>
-        <Price>{formatCurrency(regularPrice)}</Price>
-        {discount ? (
-          <Discount>{formatCurrency(discount)}</Discount>
-        ) : (
-          <span>&mdash;</span>
-        )}
+    <TableRow role="row">
+      <Img src={image} />
+      <Room>{name}</Room>
+      <div>Chứa tối đa {maxCapacity} khách</div>
+      <Price>{formatCurrency(regularPrice)}</Price>
+      {discount ? (
+        <Discount>{formatCurrency(discount)}</Discount>
+      ) : (
+        <span>&mdash;</span>
+      )}
 
-        <div>
-          <button onClick={handleDuplicate} disabled={isCreating}>
-            <HiSquare2Stack />
-          </button>
-          <button onClick={() => setShowForm((s) => !s)}>
-            <HiPencil />
-          </button>
-          <button onClick={() => deleteRoom(roomId)} disabled={isDeleting}>
-            <HiTrash />
-          </button>
-        </div>
-      </TableRow>
-      {showForm && <CreateRoomForm roomToEdit={room} />}
-    </>
+      <div>
+        <button onClick={handleDuplicate} disabled={isCreating}>
+          <HiSquare2Stack />
+        </button>
+
+        <Modal>
+          <Modal.Open opens="edit">
+            <button>
+              <HiPencil />
+            </button>
+          </Modal.Open>
+          <Modal.Window name="edit">
+            <CreateRoomForm roomToEdit={room} />
+          </Modal.Window>
+
+          <Modal.Open>
+            <button>
+              <HiTrash />
+            </button>
+          </Modal.Open>
+          <Modal.Window>
+            <ConfirmDelete
+              resourceName="phòng"
+              disabled={isDeleting}
+              onConfirm={() => deleteRoom(roomId)}
+            />
+          </Modal.Window>
+        </Modal>
+      </div>
+    </TableRow>
   );
 }
 

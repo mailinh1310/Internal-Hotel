@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import styled from "styled-components";
 import Button from "./Button";
 import Heading from "./Heading";
@@ -20,21 +21,25 @@ const StyledConfirmDelete = styled.div`
   }
 `;
 
-function ConfirmDelete({ resourceName, onConfirm, disabled }) {
+function ConfirmDelete({ resourceName, onConfirm, disabled, onCloseModal }) {
   return (
     <StyledConfirmDelete>
-      <Heading as="h3">Delete {resourceName}</Heading>
+      <Heading as="h3">Xoá {resourceName}</Heading>
       <p>
-        Are you sure you want to delete this {resourceName} permanently? This
-        action cannot be undone.
+        Bạn có chắc chắn muốn xoá {resourceName} này? Dữ liệu đã xoá không thể
+        khôi phục.
       </p>
 
       <div>
-        <Button variation="secondary" disabled={disabled}>
-          Cancel
+        <Button
+          variation="secondary"
+          disabled={disabled}
+          onClick={onCloseModal}
+        >
+          Huỷ
         </Button>
-        <Button variation="danger" disabled={disabled}>
-          Delete
+        <Button variation="danger" disabled={disabled} onClick={onConfirm}>
+          Xoá
         </Button>
       </div>
     </StyledConfirmDelete>

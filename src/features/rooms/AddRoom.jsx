@@ -4,21 +4,16 @@ import CreateRoomForm from "./CreateRoomForm";
 
 function AddRoom() {
   return (
-    <Modal>
-      <Modal.Open opens="room-form">
-        <Button>Thêm phòng</Button>
-      </Modal.Open>
-      <Modal.Window name="room-form">
-        <CreateRoomForm />
-      </Modal.Window>
-
-      <Modal.Open>
-        <Button>Xem bảng phòng</Button>
-      </Modal.Open>
-      <Modal.Window>
-        <CreateRoomForm />
-      </Modal.Window>
-    </Modal>
+    <div>
+      <Modal>
+        <Modal.Open opens="room-form">
+          <Button>Thêm phòng</Button>
+        </Modal.Open>
+        <Modal.Window name="room-form">
+          <CreateRoomForm />
+        </Modal.Window>
+      </Modal>
+    </div>
   );
 }
 
