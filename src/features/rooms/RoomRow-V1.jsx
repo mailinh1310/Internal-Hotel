@@ -77,36 +77,33 @@ function RoomRow({ room }) {
       )}
 
       <div>
+        <button onClick={handleDuplicate} disabled={isCreating}>
+          <HiSquare2Stack />
+        </button>
+
         <Modal>
-          <Menus.Menu>
-            <Menus.Toggle id={roomId} />
+          <Modal.Open opens="edit">
+            <button>
+              <HiPencil />
+            </button>
+          </Modal.Open>
+          <Modal.Window name="edit">
+            <CreateRoomForm roomToEdit={room} />
+          </Modal.Window>
 
-            <Menus.List id={roomId}>
-              <Menus.Button icon={<HiSquare2Stack />} onClick={handleDuplicate}>
-                Sao chép
-              </Menus.Button>
+          <Modal.Open opens="delete">
+            <button>
+              <HiTrash />
+            </button>
+          </Modal.Open>
 
-              <Modal.Open opens="edit">
-                <Menus.Button icon={<HiPencil />}>Chỉnh sửa</Menus.Button>
-              </Modal.Open>
-
-              <Modal.Open opens="delete">
-                <Menus.Button icon={<HiTrash />}>Xoá</Menus.Button>
-              </Modal.Open>
-            </Menus.List>
-
-            <Modal.Window name="edit">
-              <CreateRoomForm roomToEdit={room} />
-            </Modal.Window>
-
-            <Modal.Window name="delete">
-              <ConfirmDelete
-                resourceName="phòng"
-                disabled={isDeleting}
-                onConfirm={() => deleteRoom(roomId)}
-              />
-            </Modal.Window>
-          </Menus.Menu>
+          <Modal.Window name="delete">
+            <ConfirmDelete
+              resourceName="phòng"
+              disabled={isDeleting}
+              onConfirm={() => deleteRoom(roomId)}
+            />
+          </Modal.Window>
         </Modal>
       </div>
     </Table.Row>
