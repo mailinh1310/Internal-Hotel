@@ -9,7 +9,7 @@ import FormRow from "../../ui/FormRow";
 import useCreateRoom from "./useCreateRoom";
 import useEditRoom from "./useEditRoom";
 
-function CreateRoomForm({ roomToEdit = {} }) {
+function CreateRoomForm({ roomToEdit = {}, onCloseModal }) {
   const { id: editId, ...editValues } = roomToEdit;
 
   const isEditSession = Boolean(editId);
@@ -44,6 +44,7 @@ function CreateRoomForm({ roomToEdit = {} }) {
           onSuccess: (data) => {
             console.log(data);
             reset();
+            onCloseModal?.();
           },
         }
       );
@@ -54,7 +55,10 @@ function CreateRoomForm({ roomToEdit = {} }) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={onCloseModal ? "modal" : "regular"}
+    >
       <FormRow label="Tên phòng" error={errors?.name?.message}>
         <Input
           type="text"
@@ -132,7 +136,11 @@ function CreateRoomForm({ roomToEdit = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+        >
           Huỷ
         </Button>
         <Button disabled={isWorking}>
