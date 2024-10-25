@@ -8,22 +8,31 @@ function BookingTableOperations() {
       <Filter
         filterField="status"
         options={[
-          { value: "all", label: "All" },
-          { value: "checked-out", label: "Checked out" },
-          { value: "checked-in", label: "Checked in" },
-          { value: "unconfirmed", label: "Unconfirmed" },
+          { value: "all", label: "Tất cả đơn" },
+          { value: "checked-out", label: "Đã trả phòng" },
+          { value: "checked-in", label: "Đã nhận phòng" },
+          { value: "unconfirmed", label: "Chưa xác nhận" },
         ]}
       />
 
       <SortBy
         options={[
-          { value: "startDate-desc", label: "Sort by date (recent first)" },
-          { value: "startDate-asc", label: "Sort by date (earlier first)" },
+          {
+            value: "startDate-desc",
+            label: "Sắp xếp theo thời gian (từ xa nhất)",
+          },
+          {
+            value: "startDate-asc",
+            label: "Sắp xếp theo thời gian (từ gần nhất)",
+          },
           {
             value: "totalPrice-desc",
-            label: "Sort by amount (high first)",
+            label: "Sắp xếp theo tổng tiền (từ cao nhất)",
           },
-          { value: "totalPrice-asc", label: "Sort by amount (low first)" },
+          {
+            value: "totalPrice-asc",
+            label: "Sắp xếp theo tổng tiền (từ thấp nhất)",
+          },
         ]}
       />
     </TableOperations>
