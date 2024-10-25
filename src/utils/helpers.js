@@ -1,5 +1,6 @@
 import { formatDistance, parseISO } from "date-fns";
 import { differenceInDays } from "date-fns";
+import { vi } from "date-fns/locale";
 
 // We want to make this function work for both Date objects and strings (which come from Supabase)
 export const subtractDates = (dateStr1, dateStr2) =>
@@ -8,9 +9,10 @@ export const subtractDates = (dateStr1, dateStr2) =>
 export const formatDistanceFromNow = (dateStr) =>
   formatDistance(parseISO(dateStr), new Date(), {
     addSuffix: true,
+    locale: vi,
   })
-    .replace("about ", "")
-    .replace("in", "In");
+    .replace("khoảng ", "")
+    .replace("trong", "Trong");
 
 // Supabase needs an ISO date string. However, that string will be different on every render because the MS or SEC have changed, which isn't good. So we use this trick to remove any time
 export const getToday = function (options = {}) {

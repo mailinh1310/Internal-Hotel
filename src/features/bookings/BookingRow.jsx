@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import styled from "styled-components";
 import { format, isToday } from "date-fns";
 
@@ -6,6 +8,7 @@ import Table from "../../ui/Table";
 
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
+import { vi } from "date-fns/locale";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -44,35 +47,35 @@ function BookingRow({
     numGuests,
     totalPrice,
     status,
-    guests: { fullName: guestName, email },
-    cabins: { name: cabinName },
+    Customers: { fullName: customerName, email },
+    Rooms: { name: roomName },
   },
 }) {
   const statusToTagName = {
-    unconfirmed: "blue",
-    "checked-in": "green",
-    "checked-out": "silver",
+    "Chưa xác nhận": "blue",
+    "Đã nhận phòng": "green",
+    "Đã trả phòng": "silver",
   };
 
   return (
     <Table.Row>
-      <Cabin>{cabinName}</Cabin>
+      <Cabin>{roomName}</Cabin>
 
       <Stacked>
-        <span>{guestName}</span>
+        <span>{customerName}</span>
         <span>{email}</span>
       </Stacked>
 
       <Stacked>
         <span>
           {isToday(new Date(startDate))
-            ? "Today"
+            ? "Hôm nay"
             : formatDistanceFromNow(startDate)}{" "}
-          &rarr; {numNights} night stay
+          &rarr; Ở trong {numNights} đêm
         </span>
         <span>
-          {format(new Date(startDate), "MMM dd yyyy")} &mdash;{" "}
-          {format(new Date(endDate), "MMM dd yyyy")}
+          {format(new Date(startDate), "MMM dd yyyy", { locale: vi })} &mdash;{" "}
+          {format(new Date(endDate), "MMM dd yyyy", { locale: vi })}
         </span>
       </Stacked>
 

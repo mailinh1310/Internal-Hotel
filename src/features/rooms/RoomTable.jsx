@@ -4,12 +4,14 @@ import useRooms from "./useRooms";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useSearchParams } from "react-router-dom";
+import Empty from "../../ui/Empty";
 
 function RoomTable() {
   const { isLoading, rooms } = useRooms();
   const [searchParams] = useSearchParams();
 
   if (isLoading) return <Spinner />;
+  if (!rooms.length) return <Empty resourceName="phòng" />;
 
   // 1. FILTER
   const filterValue = searchParams?.get("discount") || "all";
