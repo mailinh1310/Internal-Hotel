@@ -3,11 +3,22 @@ import RoomRow from "./RoomRow";
 import useRooms from "./useRooms";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
+import { useSearchParams } from "react-router-dom";
 
 function RoomTable() {
   const { isLoading, rooms } = useRooms();
+  const [searchParams] = useSearchParams();
 
   if (isLoading) return <Spinner />;
+
+  const filterValue = searchParams?.get("discount") || "all";
+
+  let filteredRooms;
+  if (filterValue === "all") filteredRooms = rooms;
+  if (filterValue === "no-discount")
+    filteredRooms = rooms.filter((room) => room.discount === 0);
+  if (filterValue === "with-discount")
+    filteredRooms = rooms.filter((room) => room.discount > 0);
 
   return (
     <Menus>
@@ -22,7 +33,7 @@ function RoomTable() {
         </Table.Header>
 
         <Table.Body
-          data={rooms}
+          data={filteredRooms}
           render={(room) => <RoomRow room={room} key={room.id} />}
         />
       </Table>
