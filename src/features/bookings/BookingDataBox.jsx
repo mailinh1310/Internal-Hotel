@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import styled from "styled-components";
 import { format, isToday } from "date-fns";
 import {
@@ -6,7 +7,7 @@ import {
   HiOutlineCurrencyDollar,
   HiOutlineHomeModern,
 } from "react-icons/hi2";
-
+import { vi } from "date-fns/locale";
 import DataItem from "../../ui/DataItem";
 import { Flag } from "../../ui/Flag";
 
@@ -115,8 +116,8 @@ function BookingDataBox({ booking }) {
     hasBreakfast,
     observations,
     isPaid,
-    guests: { fullName: guestName, email, country, countryFlag, nationalID },
-    cabins: { name: cabinName },
+    Customers: { fullName: guestName, email, country, countryFlag, nationalID },
+    Rooms: { name: roomName },
   } = booking;
 
   return (
@@ -125,16 +126,17 @@ function BookingDataBox({ booking }) {
         <div>
           <HiOutlineHomeModern />
           <p>
-            {numNights} nights in Cabin <span>{cabinName}</span>
+            Đặt {numNights} đêm tại phòng <span>{roomName}</span>
           </p>
         </div>
 
         <p>
-          {format(new Date(startDate), "EEE, MMM dd yyyy")} (
+          {format(new Date(startDate), "EEE, MMM dd yyyy", { locale: vi })} (
           {isToday(new Date(startDate))
             ? "Today"
             : formatDistanceFromNow(startDate)}
-          ) &mdash; {format(new Date(endDate), "EEE, MMM dd yyyy")}
+          ) &mdash;{" "}
+          {format(new Date(endDate), "EEE, MMM dd yyyy", { locale: vi })}
         </p>
       </Header>
 
@@ -142,12 +144,12 @@ function BookingDataBox({ booking }) {
         <Guest>
           {countryFlag && <Flag src={countryFlag} alt={`Flag of ${country}`} />}
           <p>
-            {guestName} {numGuests > 1 ? `+ ${numGuests - 1} guests` : ""}
+            {guestName} {numGuests > 1 ? `+ ${numGuests - 1} khách` : ""}
           </p>
           <span>&bull;</span>
           <p>{email}</p>
           <span>&bull;</span>
-          <p>National ID {nationalID}</p>
+          <p>Mã quốc gia {nationalID}</p>
         </Guest>
 
         {observations && (
@@ -159,12 +161,12 @@ function BookingDataBox({ booking }) {
           </DataItem>
         )}
 
-        <DataItem icon={<HiOutlineCheckCircle />} label="Breakfast included?">
-          {hasBreakfast ? "Yes" : "No"}
+        <DataItem icon={<HiOutlineCheckCircle />} label="Bao gồm bữa sáng?">
+          {hasBreakfast ? "Có" : "Không"}
         </DataItem>
 
         <Price isPaid={isPaid}>
-          <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
+          <DataItem icon={<HiOutlineCurrencyDollar />} label={`Tổng tiền`}>
             {formatCurrency(totalPrice)}
 
             {hasBreakfast &&
@@ -173,12 +175,15 @@ function BookingDataBox({ booking }) {
               )} breakfast)`}
           </DataItem>
 
-          <p>{isPaid ? "Paid" : "Will pay at property"}</p>
+          <p>{isPaid ? "Đã thanh toán" : "Sẽ thanh toán trực tiếp"}</p>
         </Price>
       </Section>
 
       <Footer>
-        <p>Booked {format(new Date(created_at), "EEE, MMM dd yyyy, p")}</p>
+        <p>
+          Đã đặt vào{" "}
+          {format(new Date(created_at), "EEE, MMM dd yyyy, p", { locale: vi })}
+        </p>
       </Footer>
     </StyledBookingDataBox>
   );
