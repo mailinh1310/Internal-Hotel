@@ -131,12 +131,12 @@ function BookingDataBox({ booking }) {
         </div>
 
         <p>
-          {format(new Date(startDate), "EEE, MMM dd yyyy", { locale: vi })} (
+          {format(new Date(startDate), "EEE, dd MMM yyyy", { locale: vi })} (
           {isToday(new Date(startDate))
             ? "Today"
             : formatDistanceFromNow(startDate)}
           ) &mdash;{" "}
-          {format(new Date(endDate), "EEE, MMM dd yyyy", { locale: vi })}
+          {format(new Date(endDate), "EEE, dd MMM yyyy", { locale: vi })}
         </p>
       </Header>
 
@@ -182,7 +182,7 @@ function BookingDataBox({ booking }) {
       <Footer>
         <p>
           Đã đặt vào{" "}
-          {format(new Date(created_at), "EEE, MMM dd yyyy, p", { locale: vi })}
+          {format(new Date(created_at), "EEE, dd MMM yyyy, p", { locale: vi })}
         </p>
       </Footer>
     </StyledBookingDataBox>

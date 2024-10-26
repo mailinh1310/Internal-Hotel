@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
 import BookingDataBox from "../../features/bookings/BookingDataBox";
 
@@ -8,6 +10,12 @@ import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
+import useBooking from "../bookings/useBooking";
+import Spinner from "../../ui/Spinner";
+import { useEffect, useState } from "react";
+import Checkbox from "../../ui/Checkbox";
+import { formatCurrency } from "../../utils/helpers";
+import useCheckin from "./useCheckin";
 
 const Box = styled.div`
   /* Box */
@@ -18,34 +26,53 @@ const Box = styled.div`
 `;
 
 function CheckinBooking() {
-  const moveBack = useMoveBack();
+  const { booking, isLoading } = useBooking();
+  const [confirmPaid, setConfirmPaid] = useState(false);
 
-  const booking = {};
+  useEffect(() => setConfirmPaid(booking?.isPaid ?? false), [booking]);
+
+  const moveBack = useMoveBack();
+  const { checkin, isCheckingIn } = useCheckin();
+
+  if (isLoading) return <Spinner />;
 
   const {
     id: bookingId,
-    guests,
+    Customers: guests,
     totalPrice,
     numGuests,
     hasBreakfast,
     numNights,
   } = booking;
 
-  function handleCheckin() {}
+  function handleCheckin() {
+    if (!confirmPaid) return;
+    checkin(bookingId);
+  }
 
   return (
     <>
       <Row type="horizontal">
-        <Heading as="h1">Check in booking #{bookingId}</Heading>
-        <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
+        <Heading as="h1">Nhận phòng đơn #{bookingId}</Heading>
+        <ButtonText onClick={moveBack}>&larr; Quay lại</ButtonText>
       </Row>
-
       <BookingDataBox booking={booking} />
-
+      <Box>
+        <Checkbox
+          checked={confirmPaid}
+          onChange={() => setConfirmPaid((confirm) => !confirm)}
+          id="confirm"
+        >
+          Tôi xác nhận rằng khách hàng {guests.fullName} đã hoàn thành thanh
+          toán tổng số tiền {formatCurrency(totalPrice)}
+        </Checkbox>
+      </Box>
       <ButtonGroup>
-        <Button onClick={handleCheckin}>Check in booking #{bookingId}</Button>
+        <Button onClick={handleCheckin} disabled={!confirmPaid || isCheckingIn}>
+          Nhận phòng đơn #{bookingId}
+        </Button>
         <Button variation="secondary" onClick={moveBack}>
-          Back
+          Quay lại
         </Button>
       </ButtonGroup>
     </>
