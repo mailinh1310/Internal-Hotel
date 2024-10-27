@@ -10,8 +10,9 @@ import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
 import { vi } from "date-fns/locale";
 import Menus from "../../ui/Menus";
-import { HiArrowDownOnSquare, HiEye } from "react-icons/hi2";
+import { HiArrowDownOnSquare, HiArrowUpOnSquare, HiEye } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
+import useCheckout from "../check-in-out/useCheckout";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -55,6 +56,7 @@ function BookingRow({
   },
 }) {
   const navigate = useNavigate();
+  const { checkout, isCheckingOut } = useCheckout();
 
   const statusToTagName = {
     "Chưa xác nhận": "blue",
@@ -97,12 +99,23 @@ function BookingRow({
           >
             Chi tiết
           </Menus.Button>
+
           {status === "Chưa xác nhận" && (
             <Menus.Button
               icon={<HiArrowDownOnSquare />}
               onClick={() => navigate(`/checkin/${bookingId}`)}
             >
               Nhận phòng
+            </Menus.Button>
+          )}
+
+          {status === "Đã nhận phòng" && (
+            <Menus.Button
+              icon={<HiArrowUpOnSquare />}
+              onClick={() => checkout(bookingId)}
+              disabled={isCheckingOut}
+            >
+              Trả phòng
             </Menus.Button>
           )}
         </Menus.List>
