@@ -110,7 +110,7 @@ function BookingDataBox({ booking }) {
     endDate,
     numNights,
     numGuests,
-    cabinPrice,
+    roomPrice,
     extrasPrice,
     totalPrice,
     hasBreakfast,
@@ -133,7 +133,7 @@ function BookingDataBox({ booking }) {
         <p>
           {format(new Date(startDate), "EEE, dd MMM yyyy", { locale: vi })} (
           {isToday(new Date(startDate))
-            ? "Today"
+            ? "Hôm nay"
             : formatDistanceFromNow(startDate)}
           ) &mdash;{" "}
           {format(new Date(endDate), "EEE, dd MMM yyyy", { locale: vi })}
@@ -170,9 +170,9 @@ function BookingDataBox({ booking }) {
             {formatCurrency(totalPrice)}
 
             {hasBreakfast &&
-              ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
+              ` (${formatCurrency(roomPrice)} phòng + ${formatCurrency(
                 extrasPrice
-              )} breakfast)`}
+              )} bữa sáng)`}
           </DataItem>
 
           <p>{isPaid ? "Đã thanh toán" : "Sẽ thanh toán trực tiếp"}</p>
