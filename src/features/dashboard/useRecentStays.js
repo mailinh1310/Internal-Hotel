@@ -1,8 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  getBookingsAfterDate,
-  getStaysAfterDate,
-} from "../../services/apiBookings";
+import { getStaysAfterDate } from "../../services/apiBookings";
 import { useSearchParams } from "react-router-dom";
 import { subDays } from "date-fns";
 
@@ -21,8 +18,8 @@ export function useRecentStays() {
   });
 
   const confirmedStays = stays?.filter(
-    (stay) => stay.status == "Đã nhận phòng" || status === "Đã trả phòng"
+    (stay) => stay.status === "Đã nhận phòng" || stay.status === "Đã trả phòng"
   );
 
-  return { isLoading, stays, confirmedStays };
+  return { isLoading, stays, confirmedStays, numDays };
 }

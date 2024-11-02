@@ -61,7 +61,7 @@ export async function getBookingsAfterDate(date) {
 
   if (error) {
     console.error(error);
-    throw new Error("Bookings could not get loaded");
+    throw new Error("Không tải được đơn đặt phòng");
   }
 
   return data;
@@ -71,13 +71,13 @@ export async function getStaysAfterDate(date) {
   const { data, error } = await supabase
     .from("Bookings")
     // .select('*')
-    .select("*, guests(fullName)")
+    .select("*, Customers(fullName)")
     .gte("startDate", date)
     .lte("startDate", getToday());
 
   if (error) {
     console.error(error);
-    throw new Error("Bookings could not get loaded");
+    throw new Error("Không tải được đơn đặt phòng");
   }
 
   return data;
