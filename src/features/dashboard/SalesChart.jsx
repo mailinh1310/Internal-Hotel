@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { useDarkMode } from "../../context/DarkModeContext";
 import { eachDayOfInterval, format, isSameDay, subDays } from "date-fns";
+import { vi } from "date-fns/locale";
 
 const StyledSalesChart = styled(DashboardBox)`
   grid-column: 1 / -1;
@@ -68,7 +69,7 @@ function SalesChart({ bookings, numDays }) {
 
   const data = allDates.map((date) => {
     return {
-      label: format(date, "dd MMM"),
+      label: format(date, "dd MMM", { locale: vi }),
       totalSales: bookings
         .filter((booking) => isSameDay(date, new Date(booking.created_at)))
         .reduce((acc, cur) => acc + cur.totalPrice, 0),
@@ -95,7 +96,10 @@ function SalesChart({ bookings, numDays }) {
 
   return (
     <StyledSalesChart>
-      <Heading as="h2">Doanh thu</Heading>
+      <Heading as="h2">
+        Doanh thu từ {format(allDates.at(0), "dd MMM yyyy", { locale: vi })}{" "}
+        &mdash; {format(allDates.at(-1), "dd MMM yyyy", { locale: vi })}
+      </Heading>
 
       <ResponsiveContainer height={300} width="100%">
         <AreaChart data={data}>
