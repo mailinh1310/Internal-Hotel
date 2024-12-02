@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import styled from "styled-components";
+import Chatbot from "../features/chatbot/Chatbot";
 
 const StyledAppLayout = styled.div`
   display: grid;
@@ -14,6 +15,10 @@ const Main = styled.main`
   background-color: var(--color-grey-50);
   padding: 4rem 4.8rem 6.4rem;
   overflow: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const Container = styled.div`
@@ -33,6 +38,7 @@ function AppLayout() {
         <Container>
           <Outlet />
         </Container>
+        <Chatbot />
       </Main>
     </StyledAppLayout>
   );

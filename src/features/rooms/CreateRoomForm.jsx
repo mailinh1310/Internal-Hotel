@@ -8,6 +8,19 @@ import { useForm } from "react-hook-form";
 import FormRow from "../../ui/FormRow";
 import useCreateRoom from "./useCreateRoom";
 import useEditRoom from "./useEditRoom";
+import Heading from "../../ui/Heading";
+import styled, { css } from "styled-components";
+
+const FormHeading = styled(Heading).attrs({ as: "h2" })`
+  ${(props) =>
+    props.center &&
+    css`
+      text-align: center;
+      padding-bottom: 2rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--color-grey-100);
+    `}
+`;
 
 function CreateRoomForm({ roomToEdit = {}, onCloseModal }) {
   const { id: editId, ...editValues } = roomToEdit;
@@ -59,6 +72,9 @@ function CreateRoomForm({ roomToEdit = {}, onCloseModal }) {
       onSubmit={handleSubmit(onSubmit, onError)}
       type={onCloseModal ? "modal" : "regular"}
     >
+      <FormHeading center>
+        {isEditSession ? "Sửa thông tin" : "Thêm phòng"}
+      </FormHeading>
       <FormRow label="Tên phòng" error={errors?.name?.message}>
         <Input
           type="text"

@@ -19,11 +19,11 @@ function BookingTableOperations() {
         options={[
           {
             value: "startDate-desc",
-            label: "Sắp xếp theo thời gian (từ xa nhất)",
+            label: "Sắp xếp theo thời gian (từ gần nhất)",
           },
           {
             value: "startDate-asc",
-            label: "Sắp xếp theo thời gian (từ gần nhất)",
+            label: "Sắp xếp theo thời gian (từ xa nhất)",
           },
           {
             value: "totalPrice-desc",

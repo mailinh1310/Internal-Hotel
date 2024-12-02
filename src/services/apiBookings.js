@@ -53,6 +53,7 @@ export async function getBooking(id) {
 }
 
 export async function getBookingsAfterDate(date) {
+  console.log(date, getToday({ end: true }));
   const { data, error } = await supabase
     .from("Bookings")
     .select("created_at, totalPrice, extrasPrice")
@@ -96,7 +97,7 @@ export async function getStaysTodayActivity() {
     console.error("Error fetching stays activity:", error);
     return null;
   }
-  console.log(data);
+  // console.log(data);
 
   // Lọc dữ liệu dựa trên startDate và endDate
   const filteredData = data.filter((booking) => {
@@ -105,14 +106,14 @@ export async function getStaysTodayActivity() {
       : null;
     const endDate = booking.endDate ? booking.endDate.split("T")[0] : null;
 
-    console.log(startDate);
+    // console.log(startDate);
     return (
       (booking.status === "Chưa xác nhận" && startDate === today) ||
       (booking.status === "Đã nhận phòng" && endDate === today)
     );
   });
 
-  console.log(filteredData);
+  // console.log(filteredData);
   return filteredData;
 }
 

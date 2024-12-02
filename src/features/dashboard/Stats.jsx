@@ -45,7 +45,7 @@ function Stats({ bookings, confirmedStays, numDays, roomCount }) {
         value={checkins}
       />
       <Stat
-        title="Tỉ lệ lấp đầy"
+        title="Tỉ lệ hết phòng"
         color="yellow"
         icon={<HiOutlineChartBar />}
         value={Math.round(occupation * 100) + "%"}
